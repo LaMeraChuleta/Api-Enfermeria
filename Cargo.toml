@@ -1,0 +1,19 @@
+[package]
+name = "actix-enfermeria"
+version = "0.1.0"
+authors = ["LaMeraChuleta <geoffreyytorres25@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+actix-web = "3.1.0"
+actix-files = "0.4.0"
+actix-multipart = "0.3.0"
+actix-cors = "0.5.0"
+futures = "0.3.6"
+sqlx = { version = "0.4.1", features = [ "mysql", "chrono", "runtime-actix-native-tls", "macros" ] }
+serde = "1.0.106"
+serde_json = "1.0.51"
+anyhow = "1.0.28"
+dotenv = "0.15.0"
