@@ -4,6 +4,7 @@ use actix_web::HttpRequest;
 use sqlx::MySqlPool;
 use crate::models;
 
+
 #[get("/familia/{id_enfermera}")]
 pub async fn obtener_familia(db_pool: web::Data<MySqlPool>, req: HttpRequest) -> impl Responder {
     let result = models::get_familia(

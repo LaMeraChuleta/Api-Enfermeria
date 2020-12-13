@@ -130,3 +130,32 @@ pub async fn update_enfermera(pool: &MySqlPool, matricula: &str, new_enfermera: 
     .rows_affected();
     Ok(rows_affected)
 }
+
+#[derive(Serialize, FromRow, Deserialize)]
+pub struct CatalogoTipoEnfermera {
+    pub id: String,
+    pub descripcion: String
+}
+impl Responder for CatalogoTipoEnfermera {
+    type Error = Error;
+    type Future = Ready<Result<HttpResponse, Error>>;
+    fn respond_to(self, _req: &HttpRequest) -> Self::Future {
+        let body = serde_json::to_string(&self).unwrap();        
+        ready(Ok(
+            HttpResponse::Ok()
+                .content_type("application/json")
+                .body(body)
+        ))
+    }
+}
+pub async fn get_catalogo_tipo_enfermera(pool: &MySqlPool) -> Result<Vec<CatalogoTipoEnfermera>> {
+    let mut rows = sqlx::query("SELECT * FROM tipo_enfermera").fetch(pool);
+    let mut vec_catalogo: Vec<CatalogoTipoEnfermera> = vec![];
+    while let Some(row) = rows.try_next().await.unwrap() {
+        vec_catalogo.push(CatalogoTipoEnfermera { 
+            id: row.get("Id"),
+            descripcion: row.get("Descripcion"),       
+        });                
+    };            
+    Ok(vec_catalogo)
+}

@@ -39,7 +39,7 @@ pub async fn get_estudios(pool: &MySqlPool, id_enfermera: &str) -> Result<Vec<Es
     while let Some(row) = rows.try_next().await.unwrap() {
         vec_familia.push(Estudio {
             id_enfermera: row.get("Id_Enfermera"),
-            id_estudio: row.get("Id_Familia"),
+            id_estudio: row.get("Id_Estudio"),
             nivel: row.get("Nivel"),
             titulo: row.get("Titulo"),
             institucion: row.get("Institucion"),

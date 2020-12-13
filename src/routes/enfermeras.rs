@@ -4,6 +4,14 @@ use actix_web::HttpRequest;
 use sqlx::MySqlPool;
 use crate::models;
 
+#[get("/catalogo/tipoEnfermera")]
+pub async fn obtener_catalogo_tipo_enfermera(db_pool: web::Data<MySqlPool>) -> impl Responder {
+    let result = models::get_catalogo_tipo_enfermera(db_pool.get_ref()).await;    
+    match result {
+        Ok(catalogo) => HttpResponse::Ok().json(catalogo),
+        _ => HttpResponse::BadRequest().body("Sin Registros"),
+    }
+}
 #[get("/enfermera")]
 pub async fn obtener_enfermeras(db_pool: web::Data<MySqlPool>) -> impl Responder {
     let result = models::get_enfermeras(db_pool.get_ref()).await;
