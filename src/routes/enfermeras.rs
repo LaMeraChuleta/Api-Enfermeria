@@ -4,7 +4,7 @@ use actix_web::HttpRequest;
 use sqlx::MySqlPool;
 use crate::models;
 
-#[get("/mariadb")]
+#[get("/enfermera")]
 pub async fn obtener_enfermeras(db_pool: web::Data<MySqlPool>) -> impl Responder {
     let result = models::get_enfermeras(db_pool.get_ref()).await;
     match result {
@@ -12,7 +12,7 @@ pub async fn obtener_enfermeras(db_pool: web::Data<MySqlPool>) -> impl Responder
         _ => HttpResponse::BadRequest().body("Sin Registros"),
     }
 }
-#[post("/mariadb")]
+#[post("/enfermera")]
 pub async fn insertar_enfermera(db_pool: web::Data<MySqlPool>, new_enfermera: web::Json<models::Enfermera>) -> impl Responder {
     let result = models::set_enfermeras(db_pool.get_ref(), new_enfermera).await;
     match result {
@@ -20,7 +20,7 @@ pub async fn insertar_enfermera(db_pool: web::Data<MySqlPool>, new_enfermera: we
         _ => HttpResponse::BadRequest().body("Sin Registros"),
     }
 }
-#[delete("/mariadb/{matricula}")]
+#[delete("/enfermera/{matricula}")]
 pub async fn eliminar_enfermera(db_pool: web::Data<MySqlPool>, req: HttpRequest) -> impl Responder {
     let result = models::delete_enfermera(
         db_pool.get_ref(),
@@ -34,7 +34,7 @@ pub async fn eliminar_enfermera(db_pool: web::Data<MySqlPool>, req: HttpRequest)
         _ => HttpResponse::BadRequest().body("Sin Registros"),
     }
 }
-#[put("/mariadb/{matricula}")]
+#[put("/enfermera/{matricula}")]
 pub async fn actualizar_enfermera(db_pool: web::Data<MySqlPool>, req: HttpRequest, new_enfermera: web::Json<models::Enfermera>) -> impl Responder {
     let result = models::update_enfermera(
         db_pool.get_ref(),
