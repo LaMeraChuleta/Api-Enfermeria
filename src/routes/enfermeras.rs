@@ -5,7 +5,7 @@ use sqlx::MySqlPool;
 use crate::models;
 
 #[get("/mariadb")]
-pub async fn find(db_pool: web::Data<MySqlPool>) -> impl Responder {
+pub async fn obtener_enfermeras(db_pool: web::Data<MySqlPool>) -> impl Responder {
     let result = models::get_enfermeras(db_pool.get_ref()).await;
     match result {
         Ok(enfermera) => HttpResponse::Ok().json(enfermera),
@@ -13,7 +13,7 @@ pub async fn find(db_pool: web::Data<MySqlPool>) -> impl Responder {
     }
 }
 #[post("/mariadb")]
-pub async fn insert(db_pool: web::Data<MySqlPool>, new_enfermera: web::Json<models::Enfermera>) -> impl Responder {
+pub async fn insertar_enfermera(db_pool: web::Data<MySqlPool>, new_enfermera: web::Json<models::Enfermera>) -> impl Responder {
     let result = models::set_enfermeras(db_pool.get_ref(), new_enfermera).await;
     match result {
         Ok(rows_affected) => HttpResponse::Ok().json(rows_affected),
@@ -21,7 +21,7 @@ pub async fn insert(db_pool: web::Data<MySqlPool>, new_enfermera: web::Json<mode
     }
 }
 #[delete("/mariadb/{matricula}")]
-pub async fn remove(db_pool: web::Data<MySqlPool>, req: HttpRequest) -> impl Responder {
+pub async fn eliminar_enfermera(db_pool: web::Data<MySqlPool>, req: HttpRequest) -> impl Responder {
     let result = models::delete_enfermera(
         db_pool.get_ref(),
     req
@@ -35,7 +35,7 @@ pub async fn remove(db_pool: web::Data<MySqlPool>, req: HttpRequest) -> impl Res
     }
 }
 #[put("/mariadb/{matricula}")]
-pub async fn update(db_pool: web::Data<MySqlPool>, req: HttpRequest, new_enfermera: web::Json<models::Enfermera>) -> impl Responder {
+pub async fn actualizar_enfermera(db_pool: web::Data<MySqlPool>, req: HttpRequest, new_enfermera: web::Json<models::Enfermera>) -> impl Responder {
     let result = models::update_enfermera(
         db_pool.get_ref(),
         req

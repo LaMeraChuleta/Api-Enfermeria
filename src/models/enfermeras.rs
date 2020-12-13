@@ -18,6 +18,8 @@ pub struct Enfermera {
     pub descanso: String,
     pub fecha_nacimiento: String,
     pub lugar_nacimiento: String,
+    pub curp: String,
+    pub telefono: String,
 }
 impl Responder for Enfermera {
     type Error = Error;
@@ -46,7 +48,9 @@ pub async fn get_enfermeras(pool: &MySqlPool) -> Result<Vec<Enfermera>> {
             horario_labores: row.get("Horario_Labores"),
             descanso: row.get("Descanso"),
             fecha_nacimiento: row.get("Fecha_Nacimiento"),
-            lugar_nacimiento: row.get("Lugar_Nacimiento")
+            lugar_nacimiento: row.get("Lugar_Nacimiento"),
+            curp: row.get("Curp"),
+            telefono: row.get("Telefono")
         });                
     };            
     Ok(vec_enfermera)
@@ -57,8 +61,8 @@ pub async fn set_enfermeras(pool: &MySqlPool, new_enfermera: web::Json<Enfermera
             INSERT INTO
             enfermeras(Matricula,Nombres,Apellido_M,Apellido_P,
                 Tipo_Enfermera,Sexo,Jornada,Horario_Labores,
-                Descanso,Fecha_Nacimiento,Lugar_Nacimiento)
-            VALUE (?,?,?,?,?,?,?,?,?,?,?)
+                Descanso,Fecha_Nacimiento,Lugar_Nacimiento, Curp, Telefono)
+            VALUE (?,?,?,?,?,?,?,?,?,?,?,?,?)
         "#,
         &new_enfermera.matricula.to_string(),
         &new_enfermera.nombres.to_string(),
@@ -70,7 +74,9 @@ pub async fn set_enfermeras(pool: &MySqlPool, new_enfermera: web::Json<Enfermera
         &new_enfermera.horario_labores.to_string(),
         &new_enfermera.descanso.to_string(),
         &new_enfermera.fecha_nacimiento.to_string(),
-        &new_enfermera.lugar_nacimiento.to_string()
+        &new_enfermera.lugar_nacimiento.to_string(),
+        &new_enfermera.curp.to_string(),
+        &new_enfermera.telefono.to_string(),
     )
     .execute(pool)
     .await
@@ -99,7 +105,8 @@ pub async fn update_enfermera(pool: &MySqlPool, matricula: &str, new_enfermera: 
             UPDATE enfermeras
                 SET Matricula = ?, Nombres = ?, Apellido_M = ?, Apellido_P = ?,
                 Tipo_Enfermera = ?, Sexo = ?, Jornada = ?, Horario_Labores = ?,
-                Descanso = ?, Fecha_Nacimiento = ?, Lugar_Nacimiento = ?
+                Descanso = ?, Fecha_Nacimiento = ?, Lugar_Nacimiento = ?,
+                Curp = ?, Telefono = ?
             WHERE Matricula = ?
         "#,
         &new_enfermera.matricula.to_string(),
@@ -113,6 +120,8 @@ pub async fn update_enfermera(pool: &MySqlPool, matricula: &str, new_enfermera: 
         &new_enfermera.descanso.to_string(),
         &new_enfermera.fecha_nacimiento.to_string(),
         &new_enfermera.lugar_nacimiento.to_string(),
+        &new_enfermera.curp.to_string(),
+        &new_enfermera.telefono.to_string(),
         matricula
     )
     .execute(pool)
