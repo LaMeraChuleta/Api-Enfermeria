@@ -4,6 +4,15 @@ use actix_web::HttpRequest;
 use sqlx::MySqlPool;
 use crate::models;
 
+
+#[get("/pdf/{matricula}")]
+pub async fn obtener_pdf_enfermera(db_pool: web::Data<MySqlPool>, req: HttpRequest) -> impl Responder {
+    let result = models::imprimir_pdf_enfermera(
+        db_pool.get_ref(), 
+        req.match_info().get("matricula").unwrap()).await;
+    std::thread::sleep(std::time::Duration::from_secs(2));
+    HttpResponse::Ok().json(result)    
+}
 #[get("/catalogo/tipoEnfermera")]
 pub async fn obtener_catalogo_tipo_enfermera(db_pool: web::Data<MySqlPool>) -> impl Responder {
     let result = models::get_catalogo_tipo_enfermera(db_pool.get_ref()).await;    
@@ -29,7 +38,7 @@ pub async fn insertar_enfermera(db_pool: web::Data<MySqlPool>, new_enfermera: we
     }
 }
 #[delete("/enfermera/{matricula}")]
-pub async fn eliminar_enfermera(db_pool: web::Data<MySqlPool>, req: HttpRequest) -> impl Responder {
+pub async fn eliminar_enfermera(db_pool: web::Data<MySqlPool>, req: HttpRequest) -> impl Responder {    
     let result = models::delete_enfermera(
         db_pool.get_ref(),
     req

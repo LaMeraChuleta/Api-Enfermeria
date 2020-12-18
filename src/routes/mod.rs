@@ -13,6 +13,7 @@ pub fn init(cfg: &mut actix_web::web::ServiceConfig) {
     cfg.service(insertar_enfermera);
     cfg.service(eliminar_enfermera);
     cfg.service(actualizar_enfermera);
+    cfg.service(obtener_pdf_enfermera);
     cfg.service(obtener_catalogo_tipo_enfermera);
     //FAMILIA
     cfg.service(obtener_familia);

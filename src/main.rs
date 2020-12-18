@@ -15,19 +15,18 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .wrap(
                 Cors::default()
-                    .allowed_origin("http://localhost:8084")
-                    .allowed_origin("http://localhost:8083")
+                    // .allowed_origin("http://localhost:8084")
+                    // .allowed_origin("http://localhost:8083")
+                    .allow_any_origin()                    
                     .allowed_methods(vec!["GET", "POST", "DELETE", "PUT"])
                     .allowed_headers(vec![header::AUTHORIZATION, header::ACCEPT])
-                    .allowed_header(header::CONTENT_TYPE)
-                    .allowed_header(header::ACCESS_CONTROL_ALLOW_ORIGIN)
-                    .supports_credentials()
+                    .allowed_header(header::CONTENT_TYPE)                                             
                     .max_age(3600),
             )
             .data(db_pool.clone())
             .configure(routes::init)                   
     })
-    .bind("localhost:8089")?
+    .bind("localhost:4000")?
     .run()
     .await
 }

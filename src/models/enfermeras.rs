@@ -1,5 +1,6 @@
+use anyhow::Result;
 use serde::{ Serialize, Deserialize };
-use actix_web::{Error, HttpRequest, HttpResponse, web, Responder, Result};
+use actix_web::{Error, HttpRequest, HttpResponse, web, Responder};
 use futures::future::{ ready, Ready };
 use sqlx::{ MySqlPool, FromRow, Row };
 use futures::TryStreamExt;
@@ -33,8 +34,35 @@ impl Responder for Enfermera {
         ))
     }
 }
+pub async fn get_enfermera_id(pool: &MySqlPool, matricula: &str) -> Result<Enfermera> {
+    let mut rows = sqlx::query(
+        r#"SELECT * FROM enfermeras 
+                WHERE Matricula = ?
+            "#)
+            .bind(matricula)
+            .fetch(pool);
+    
+    let row = rows.try_next().await.unwrap().unwrap();
+    let enfermera = Enfermera {
+            matricula: row.get("Matricula"),
+            nombres: row.get("Nombres"),
+            apellido_m: row.get("Apellido_M"),
+            apellido_p: row.get("Apellido_P"),
+            tipo_enfermera: row.get("Tipo_Enfermera"),
+            sexo:  row.get("Sexo"),
+            jornada: row.get("Jornada"),
+            horario_labores: row.get("Horario_Labores"),
+            descanso: row.get("Descanso"),
+            fecha_nacimiento: row.get("Fecha_Nacimiento"),
+            lugar_nacimiento: row.get("Lugar_Nacimiento"),
+            curp: row.get("Curp"),
+            telefono: row.get("Telefono")
+        };                           
+    Ok(enfermera)
+}
 pub async fn get_enfermeras(pool: &MySqlPool) -> Result<Vec<Enfermera>> {
-    let mut rows = sqlx::query("SELECT * FROM enfermeras").fetch(pool);
+    let mut rows = sqlx::query(
+        r#"SELECT * FROM enfermeras"#).fetch(pool);
     let mut vec_enfermera: Vec<Enfermera> = vec![];
     while let Some(row) = rows.try_next().await.unwrap() {
         vec_enfermera.push(Enfermera{
@@ -84,12 +112,12 @@ pub async fn set_enfermeras(pool: &MySqlPool, new_enfermera: web::Json<Enfermera
     .rows_affected();    
     Ok(rows_affected)
 }
-pub async fn delete_enfermera(pool: &MySqlPool, matricula: &str) -> Result<u64,> {
+pub async fn delete_enfermera(pool: &MySqlPool, matricula: &str) -> Result<u64,> {    
     let rows_affected = sqlx::query!(
         r#"
             DELETE FROM
                 enfermeras
-            WHERE matricula = ?
+            WHERE Matricula = ?
         "#,
         matricula
     )
