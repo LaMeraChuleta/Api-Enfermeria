@@ -73,7 +73,7 @@ pub async fn delete_estudio(pool: &MySqlPool, id_enfermera: &str, id_estudio: i3
         r#"
             DELETE FROM
                 estudios
-            WHERE Id_Enfermera = ? AND Id_Estudios = ?            
+            WHERE Id_Enfermera = ? AND Id_Estudio = ?            
         "#,
         id_enfermera,
         id_estudio
@@ -90,7 +90,7 @@ pub async fn update_estudio(pool: &MySqlPool, id_enfermera: &str, id_estudios: i
             UPDATE estudios
                 SET Id_Enfermera = ?, Nivel = ?, 
                 Titulo = ?, Institucion = ?, Tipo_Escuela = ?
-            WHERE Id_Enfermera = ? AND Id_Estudios = ?
+            WHERE Id_Enfermera = ? AND Id_Estudio = ?
         "#,
         &new_estudio.id_enfermera.to_string(),        
         &new_estudio.nivel.to_string(),

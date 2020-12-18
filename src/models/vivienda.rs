@@ -28,7 +28,7 @@ impl Responder for Vivienda {
         ))
     }
 }
-pub async fn get_vivienda(pool: &MySqlPool, id_enfermera: &str) -> Result<Vec<Vivienda>> {
+pub async fn get_vivienda(pool: &MySqlPool, id_enfermera: &str) -> Result<Vivienda> {
     let mut rows = sqlx::query(
         r#"
                 SELECT * FROM vivienda
@@ -36,21 +36,19 @@ pub async fn get_vivienda(pool: &MySqlPool, id_enfermera: &str) -> Result<Vec<Vi
             "#            
         )        
         .bind(id_enfermera)
-        .fetch(pool);
-    let mut vec_vivienda: Vec<Vivienda> = vec![];
-    while let Some(row) = rows.try_next().await.unwrap() {
-        vec_vivienda.push(Vivienda {
-            id_enfermera: row.get("Id_Enfermera"),
-            estado: row.get("Estado"),
-            delegacion: row.get("Delegacion"),
-            colonia: row.get("Colonia"),
-            calle: row.get("Calle"),
-            cp: row.get("CP"),
-            num_ext: row.get("Num_Ext"),
-            num_int: row.get("Num_Int"),  
-        });                
-    };            
-    Ok(vec_vivienda)
+        .fetch(pool);    
+    let row = rows.try_next().await.unwrap().unwrap();
+    let vivienda = Vivienda {
+        id_enfermera: row.get("Id_Enfermera"),
+        estado: row.get("Estado"),
+        delegacion: row.get("Delegacion"),
+        colonia: row.get("Colonia"),
+        calle: row.get("Calle"),
+        cp: row.get("CP"),
+        num_ext: row.get("Num_Ext"),
+        num_int: row.get("Num_Int"),  
+    };                             
+    Ok(vivienda)
 }
 pub async fn set_vivienda(pool: &MySqlPool, new_vivienda: web::Json<Vivienda>) -> Result<u64,> {
     let rows_affected = sqlx::query!(
